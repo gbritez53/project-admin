@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import AppLayout from "../layouts/AppLayout.astro";
 import ProjectCard from "../components/projects/ProjectCard.astro";
 import Button from "../components/ui/Button.astro";
+import EmptyState from "../components/ui/EmptyState.astro";
 import { listProjects, listProjectsByStatus } from "../db/queries/projects";
 
 const status = Astro.url.searchParams.get("status") as "active" | "archived" | "draft" | null;
@@ -10,42 +11,62 @@ const status = Astro.url.searchParams.get("status") as "active" | "archived" | "
 const projects = status 
   ? await listProjectsByStatus(Astro.locals.db as any, status)
   : await listProjects(Astro.locals.db as any);
+
+const tabs = [
+  { value: null, label: "All" },
+  { value: "active", label: "Active" },
+  { value: "draft", label: "Draft" },
+  { value: "archived", label: "Archived" },
+] as const;
 ---
 
 <BaseLayout title="Projects">
   <AppLayout title="Projects" activeTab="home">
-    <div class="mb-6">
-      <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-[var(--text)]">Projects</h1>
+    <div class="max-w-2xl mx-auto px-4 py-6">
+      <!-- Header section -->
+      <div class="mb-6 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl p-6 text-white">
+        <h1 class="text-2xl font-bold">Projects</h1>
+        <p class="text-indigo-100 text-sm mt-1">{projects.length} {projects.length === 1 ? "project" : "projects"} total</p>
+        
+        <a href="/projects/new" class="inline-flex items-center gap-2 mt-4 px-4 py-2.5 bg-white text-indigo-600 rounded-lg font-medium text-sm hover:bg-indigo-50 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          New Project
+        </a>
       </div>
       
-      <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
-        <a href="/" class:list={["px-3 py-1.5 rounded-full text-sm", !status ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
-          All
-        </a>
-        <a href="/?status=active" class:list={["px-3 py-1.5 rounded-full text-sm", status === "active" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
-          Active
-        </a>
-        <a href="/?status=draft" class:list={["px-3 py-1.5 rounded-full text-sm", status === "draft" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
-          Draft
-        </a>
-        <a href="/?status=archived" class:list={["px-3 py-1.5 rounded-full text-sm", status === "archived" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
-          Archived
-        </a>
-      </div>
-    </div>
-
-    {projects.length === 0 ? (
-      <div class="text-center py-12">
-        <p class="text-[var(--text-muted)] mb-4">No projects yet</p>
-        <Button href="/projects/new" variant="primary">New Project</Button>
-      </div>
-    ) : (
-      <div class="space-y-3">
-        {projects.map((project) => (
-          <ProjectCard project={project} />
+      <!-- Tabs -->
+      <div class="flex gap-1 p-1 mb-6 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+        {tabs.map((tab) => (
+          <a
+            href={tab.value ? `/?status=${tab.value}` : "/"}
+            class:list={[
+              "flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 text-center",
+              status === tab.value
+                ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
+            ]}
+          >
+            {tab.label}
+          </a>
         ))}
       </div>
-    )}
+
+      <!-- Project List with stagger animation -->
+      {projects.length === 0 ? (
+        <EmptyState 
+          message={status ? `No ${status} projects` : "No projects yet"} 
+          action="/projects/new"
+          actionLabel="Create your first project"
+        />
+      ) : (
+        <div class="space-y-3 stagger-children">
+          {projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      )}
+    </div>
   </AppLayout>
 </BaseLayout>

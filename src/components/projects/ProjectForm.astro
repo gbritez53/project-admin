@@ -1,7 +1,6 @@
 ---
 import Field from "../ui/Field.astro";
 import Button from "../ui/Button.astro";
-import Badge from "../ui/Badge.astro";
 import type { Project } from "../../db/schema";
 
 interface Props {
@@ -14,40 +13,40 @@ const { project, action, method = "POST" } = Astro.props;
 
 const error = Astro.url.searchParams.get("error") || "";
 const [errorField, errorMessage] = error.includes(":") 
-  ? error.split(":", 2) 
-  : [error, "Invalid input"];
+  ? [error.split(":", 2)[0], decodeURIComponent(error.split(":", 2)[1] || "")]
+  : ["", ""];
 ---
 
-<form action={action} method={method} class="space-y-4">
+<form action={action} method={method} class="space-y-5">
   <Field
     name="name"
-    label="Name"
+    label="Project Name"
     value={project?.name}
-    placeholder="Project name"
+    placeholder="Enter project name"
     required
     error={errorField === "name" ? errorMessage : undefined}
   />
 
-  <div class="flex flex-col gap-1">
-    <label for="description" class="text-sm font-medium text-[var(--text)]">
+  <div class="flex flex-col gap-1.5">
+    <label for="description" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
       Description
     </label>
     <textarea
       id="description"
       name="description"
-      rows={3}
-      placeholder="Optional description"
-      class="w-full px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] resize-none"
+      rows={4}
+      placeholder="Add a description (optional)"
+      class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 resize-none focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
     >{project?.description || ""}</textarea>
   </div>
 
-  <div class="flex flex-col gap-1">
-    <label for="status" class="text-sm font-medium text-[var(--text)]">Status</label>
+  <div class="flex flex-col gap-1.5">
+    <label for="status" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Status</label>
     <select
       id="status"
       name="status"
       value={project?.status || "active"}
-      class="w-full px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)]"
+      class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
     >
       <option value="active">Active</option>
       <option value="draft">Draft</option>
@@ -55,7 +54,23 @@ const [errorField, errorMessage] = error.includes(":")
     </select>
   </div>
 
-  <Button type="submit" variant="primary">
-    {method === "POST" ? "Create Project" : "Save Changes"}
-  </Button>
+  <div class="pt-2">
+    <Button type="submit" variant="primary" size="lg" class="w-full">
+      {method === "POST" ? (
+        <>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Create Project
+        </>
+      ) : (
+        <>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Save Changes
+        </>
+      )}
+    </Button>
+  </div>
 </form>

@@ -13,10 +13,10 @@ interface Props {
 const { name, label, type = "text", value, placeholder, required = false, error, class: className } = Astro.props;
 ---
 
-<div class:list={["flex flex-col gap-1", className]}>
-  <label for={name} class="text-sm font-medium text-[var(--text)]">
+<div class:list={["flex flex-col gap-1.5", className]}>
+  <label for={name} class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
     {label}
-    {required && <span class="text-red-500">*</span>}
+    {required && <span class="text-red-500 ml-0.5">*</span>}
   </label>
   <input
     {type}
@@ -26,10 +26,10 @@ const { name, label, type = "text", value, placeholder, required = false, error,
     {placeholder}
     {required}
     class:list={[
-      "w-full px-3 py-2 rounded border bg-[var(--bg)] text-[var(--text)]",
+      "w-full px-4 py-2.5 rounded-lg bg-white dark:bg-zinc-900 border text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 transition-all duration-200",
       error 
-        ? "border-red-500 focus:ring-red-500" 
-        : "border-[var(--border)] focus:border-[var(--accent)] focus:ring-[var(--accent)]"
+        ? "border-red-500 focus:ring-2 focus:ring-red-500/20" 
+        : "border-zinc-300 dark:border-zinc-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
     ]}
   />
   {error && <span class="text-sm text-red-500">{error}</span>}

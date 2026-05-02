@@ -3,15 +3,26 @@ interface Props {
   message?: string;
   action?: string;
   actionLabel?: string;
+  icon?: boolean;
 }
 
-const { message = "Nothing here yet", action, actionLabel = "Add" } = Astro.props;
+const { message = "Nothing here yet", action, actionLabel = "Add", icon = true } = Astro.props;
 ---
 
-<div class="text-center py-8">
-  <p class="text-[var(--text-muted)] mb-3">{message}</p>
+<div class="flex flex-col items-center justify-center py-16 px-6 text-center">
+  {icon && (
+    <div class="w-16 h-16 mb-4 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+      <svg class="w-8 h-8 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293H3.828a1 1 0 01-.707-.293L.686 13.293A1 1 0 000 12.586V13m0 0h14M12 9v.01M12 15v.01" />
+      </svg>
+    </div>
+  )}
+  <p class="text-zinc-500 dark:text-zinc-400 mb-4">{message}</p>
   {action && (
-    <a href={action} class="inline-flex items-center px-3 py-1.5 rounded bg-[var(--accent)] text-white text-sm hover:opacity-90">
+    <a href={action} class="btn btn-primary">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
       {actionLabel}
     </a>
   )}

@@ -11,7 +11,7 @@ const { title, activeTab = "home" } = Astro.props;
 ---
 
 <BaseLayout title={title}>
-  <div class="pb-20">
+  <div class="pb-20 min-h-screen">
     <slot />
   </div>
   <BottomTabBar active={activeTab} />

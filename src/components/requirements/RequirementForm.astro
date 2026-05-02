@@ -1,0 +1,38 @@
+---
+interface Props {
+  projectId?: string;
+}
+
+const { projectId } = Astro.props;
+---
+
+<form action="/api/requirements" method="POST" class="space-y-3">
+  {projectId && <input type="hidden" name="projectId" value={projectId} />}
+  
+  <div class="flex gap-2">
+    <input 
+      type="text" 
+      name="title" 
+      placeholder="Add a requirement..."
+      required
+      class="flex-1 px-4 py-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+    />
+    <select 
+      name="priority" 
+      class="px-3 py-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all duration-200"
+    >
+      <option value="low">Low</option>
+      <option value="medium" selected>Medium</option>
+      <option value="high">High</option>
+      <option value="critical">Critical</option>
+    </select>
+    <button 
+      type="submit"
+      class="px-4 py-2.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors duration-200"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+    </button>
+  </div>
+</form>

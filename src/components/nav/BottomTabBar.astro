@@ -6,36 +6,44 @@ interface Props {
 const { active = "projects" } = Astro.props;
 ---
 
-<nav class="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--card)] safe-area-inset-bottom">
-  <div class="flex items-center justify-around h-16">
+<nav class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-lg border-t border-zinc-200 dark:border-zinc-800 safe-area-inset-bottom z-50">
+  <div class="flex items-center justify-around h-16 max-w-lg mx-auto">
     <a
       href="/"
       class:list={[
-        "flex flex-col items-center justify-center w-16 h-14 text-xs",
+        "flex flex-col items-center justify-center w-full h-full text-xs transition-colors relative",
         active === "home" 
-          ? "text-[var(--accent)]" 
-          : "text-[var(--text-muted)] hover:text-[var(--text)]"
+          ? "text-indigo-600 dark:text-indigo-400" 
+          : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
       ]}
     >
+      {active === "home" && (
+        <span class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
+      )}
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
       </svg>
-      <span class="mt-1">Projects</span>
+      <span class="mt-0.5">Projects</span>
     </a>
+    
+    <div class="w-px h-8 bg-zinc-200 dark:bg-zinc-700"></div>
     
     <a
       href="/projects/new"
       class:list={[
-        "flex flex-col items-center justify-center w-16 h-14 text-xs",
+        "flex flex-col items-center justify-center w-full h-full text-xs transition-colors relative",
         active === "new" 
-          ? "text-[var(--accent)]" 
-          : "text-[var(--text-muted)] hover:text-[var(--text)]"
+          ? "text-indigo-600 dark:text-indigo-400" 
+          : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
       ]}
     >
+      {active === "new" && (
+        <span class="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
+      )}
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
       </svg>
-      <span class="mt-1">New</span>
+      <span class="mt-0.5">New</span>
     </a>
   </div>
 </nav>

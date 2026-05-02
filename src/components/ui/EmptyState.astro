@@ -1,0 +1,18 @@
+---
+interface Props {
+  message?: string;
+  action?: string;
+  actionLabel?: string;
+}
+
+const { message = "Nothing here yet", action, actionLabel = "Add" } = Astro.props;
+---
+
+<div class="text-center py-8">
+  <p class="text-[var(--text-muted)] mb-3">{message}</p>
+  {action && (
+    <a href={action} class="inline-flex items-center px-3 py-1.5 rounded bg-[var(--accent)] text-white text-sm hover:opacity-90">
+      {actionLabel}
+    </a>
+  )}
+</div>

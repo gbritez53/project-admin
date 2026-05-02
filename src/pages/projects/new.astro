@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppLayout from "../../layouts/AppLayout.astro";
+import ProjectForm from "../../components/projects/ProjectForm.astro";
+
+const error = Astro.url.searchParams.get("error") || "";
+---
+
+<BaseLayout title="New Project">
+  <AppLayout title="New Project" activeTab="new">
+    <h1 class="text-2xl font-bold text-[var(--text)] mb-6">New Project</h1>
+    
+    {error && (
+      <div class="mb-4 p-3 rounded bg-red-100 border border-red-400 text-red-800">
+        {error.split(":").pop() || error}
+      </div>
+    )}
+    
+    <ProjectForm action="/api/projects" method="POST" />
+  </AppLayout>
+</BaseLayout>

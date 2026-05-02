@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppLayout from "../../layouts/AppLayout.astro";
+import ProjectForm from "../../components/projects/ProjectForm.astro";
+import RequirementList from "../../components/requirements/RequirementList.astro";
+import EmptyState from "../../components/ui/EmptyState.astro";
+import { getProjectById } from "../../db/queries/projects";
+import { listRequirementsByProject } from "../../db/queries/requirements";
+
+const { id } = Astro.params;
+
+const project = await getProjectById(Astro.locals.db as any, id!);
+
+if (!project) {
+  return Astro.redirect("/404");
+}
+
+const requirements = await listRequirementsByProject(Astro.locals.db as any, id!);
+---
+
+<BaseLayout title={project.name}>
+  <AppLayout title={project.name}>
+    <div class="space-y-6">
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-[var(--text)]">{project.name}</h1>
+          {project.description && (
+            <p class="text-[var(--text-muted)] mt-2">{project.description}</p>
+          )}
+        </div>
+        <div class="flex gap-2">
+          <a href={`/projects/${id}/edit`} class="text-sm text-[var(--accent)]">Edit</a>
+        </div>
+      </div>
+
+      <section id="requirements">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold text-[var(--text)]">Requirements</h2>
+        </div>
+        
+        <form action="/api/requirements" method="POST" class="mb-4 p-3 rounded bg-[var(--card)] border border-[var(--border)]">
+          <input type="hidden" name="projectId" value={id} />
+          <div class="flex gap-2">
+            <input 
+              type="text" 
+              name="title" 
+              placeholder="Add requirement..." 
+              required
+              class="flex-1 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] text-sm"
+            />
+            <select name="priority" class="px-2 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] text-sm">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+            <button type="submit" class="px-3 py-2 rounded bg-[var(--accent)] text-white text-sm">Add</button>
+          </div>
+        </form>
+
+        {requirements.length > 0 ? (
+          <RequirementList requirements={requirements} />
+        ) : (
+          <EmptyState message="No requirements yet" />
+        )}
+      </section>
+    </div>
+  </AppLayout>
+</BaseLayout>

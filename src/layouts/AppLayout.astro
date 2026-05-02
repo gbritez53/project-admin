@@ -1,0 +1,18 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import BottomTabBar from "../components/nav/BottomTabBar.astro";
+
+interface Props {
+  title: string;
+  activeTab?: "home" | "new";
+}
+
+const { title, activeTab = "home" } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <div class="pb-20">
+    <slot />
+  </div>
+  <BottomTabBar active={activeTab} />
+</BaseLayout>

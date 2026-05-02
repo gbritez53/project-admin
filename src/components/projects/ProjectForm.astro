@@ -1,0 +1,61 @@
+---
+import Field from "../ui/Field.astro";
+import Button from "../ui/Button.astro";
+import Badge from "../ui/Badge.astro";
+import type { Project } from "../../db/schema";
+
+interface Props {
+  project?: Project;
+  action: string;
+  method?: "POST" | "PATCH";
+}
+
+const { project, action, method = "POST" } = Astro.props;
+
+const error = Astro.url.searchParams.get("error") || "";
+const [errorField, errorMessage] = error.includes(":") 
+  ? error.split(":", 2) 
+  : [error, "Invalid input"];
+---
+
+<form action={action} method={method} class="space-y-4">
+  <Field
+    name="name"
+    label="Name"
+    value={project?.name}
+    placeholder="Project name"
+    required
+    error={errorField === "name" ? errorMessage : undefined}
+  />
+
+  <div class="flex flex-col gap-1">
+    <label for="description" class="text-sm font-medium text-[var(--text)]">
+      Description
+    </label>
+    <textarea
+      id="description"
+      name="description"
+      rows={3}
+      placeholder="Optional description"
+      class="w-full px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)] resize-none"
+    >{project?.description || ""}</textarea>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label for="status" class="text-sm font-medium text-[var(--text)]">Status</label>
+    <select
+      id="status"
+      name="status"
+      value={project?.status || "active"}
+      class="w-full px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg)] text-[var(--text)]"
+    >
+      <option value="active">Active</option>
+      <option value="draft">Draft</option>
+      <option value="archived">Archived</option>
+    </select>
+  </div>
+
+  <Button type="submit" variant="primary">
+    {method === "POST" ? "Create Project" : "Save Changes"}
+  </Button>
+</form>

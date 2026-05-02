@@ -1,0 +1,31 @@
+---
+import Badge from "../ui/Badge.astro";
+import type { Requirement } from "../../db/schema";
+
+interface Props {
+  requirements: Requirement[];
+}
+
+const { requirements } = Astro.props;
+---
+
+{requirements.length === 0 ? (
+  <p class="text-[var(--text-muted)] text-sm">No requirements yet</p>
+) : (
+  <ul class="space-y-2">
+    {requirements.map((req) => (
+      <li class="flex items-start justify-between gap-2 p-3 rounded bg-[var(--card)] border border-[var(--border)]">
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-[var(--text)]">{req.title}</p>
+          {req.description && (
+            <p class="text-sm text-[var(--text-muted)] mt-1">{req.description}</p>
+          )}
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <Badge variant={req.priority} />
+          <Badge variant={req.status} />
+        </div>
+      </li>
+    ))}
+  </ul>
+)}

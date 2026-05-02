@@ -1,0 +1,32 @@
+---
+import Badge from "../ui/Badge.astro";
+import type { Project } from "../../db/schema";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+
+const createdDate = project.createdAt.toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+});
+---
+
+<a href={`/projects/${project.id}`} class="block">
+  <div class="p-4 rounded-lg border border-[var(--border)] bg-[var(--card)] hover:border-[var(--accent)] transition-colors">
+    <div class="flex items-start justify-between gap-2">
+      <div class="flex-1 min-w-0">
+        <h3 class="font-medium text-[var(--text)] truncate">{project.name}</h3>
+        {project.description && (
+          <p class="text-sm text-[var(--text-muted)] truncate mt-1">{project.description}</p>
+        )}
+      </div>
+      <Badge variant={project.status} />
+    </div>
+    <div class="mt-3 text-xs text-[var(--text-muted)]">
+      Created {createdDate}
+    </div>
+  </div>
+</a>

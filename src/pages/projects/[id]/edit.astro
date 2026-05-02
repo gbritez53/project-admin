@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AppLayout from "../../layouts/AppLayout.astro";
+import ProjectForm from "../../components/projects/ProjectForm.astro";
+import { getProjectById } from "../../db/queries/projects";
+
+const { id } = Astro.params;
+
+const project = await getProjectById(Astro.locals.db as any, id!);
+
+if (!project) {
+  return Astro.redirect("/404");
+}
+
+const error = Astro.url.searchParams.get("error") || "";
+---
+
+<BaseLayout title={`Edit ${project.name}`}>
+  <AppLayout title="Edit Project">
+    <h1 class="text-2xl font-bold text-[var(--text)] mb-6">Edit Project</h1>
+    
+    {error && (
+      <div class="mb-4 p-3 rounded bg-red-100 border border-red-400 text-red-800">
+        {error.split(":").pop() || error}
+      </div>
+    )}
+    
+    <ProjectForm project={project} action={`/api/projects/${id}`} method="PATCH" />
+  </AppLayout>
+</BaseLayout>

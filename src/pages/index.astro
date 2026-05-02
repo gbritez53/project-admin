@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import AppLayout from "../layouts/AppLayout.astro";
+import ProjectCard from "../components/projects/ProjectCard.astro";
+import Button from "../components/ui/Button.astro";
+import { listProjects, listProjectsByStatus } from "../db/queries/projects";
+
+const status = Astro.url.searchParams.get("status") as "active" | "archived" | "draft" | null;
+
+const projects = status 
+  ? await listProjectsByStatus(Astro.locals.db as any, status)
+  : await listProjects(Astro.locals.db as any);
+---
+
+<BaseLayout title="Projects">
+  <AppLayout title="Projects" activeTab="home">
+    <div class="mb-6">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-[var(--text)]">Projects</h1>
+      </div>
+      
+      <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
+        <a href="/" class:list={["px-3 py-1.5 rounded-full text-sm", !status ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
+          All
+        </a>
+        <a href="/?status=active" class:list={["px-3 py-1.5 rounded-full text-sm", status === "active" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
+          Active
+        </a>
+        <a href="/?status=draft" class:list={["px-3 py-1.5 rounded-full text-sm", status === "draft" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
+          Draft
+        </a>
+        <a href="/?status=archived" class:list={["px-3 py-1.5 rounded-full text-sm", status === "archived" ? "bg-[var(--accent)] text-white" : "bg-[var(--card)] border border-[var(--border)]"]}>
+          Archived
+        </a>
+      </div>
+    </div>
+
+    {projects.length === 0 ? (
+      <div class="text-center py-12">
+        <p class="text-[var(--text-muted)] mb-4">No projects yet</p>
+        <Button href="/projects/new" variant="primary">New Project</Button>
+      </div>
+    ) : (
+      <div class="space-y-3">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    )}
+  </AppLayout>
+</BaseLayout>
